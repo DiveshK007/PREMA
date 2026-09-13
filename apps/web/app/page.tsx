@@ -196,7 +196,11 @@ function PersonFields({
 export default function FormPage() {
     const router = useRouter();
     const [step, setStep] = useState<1 | 2>(1);
-    const [a, setA] = useState<PersonInput>(EMPTY_PERSON);
+    // Role is explicit from the start, not implied by a default on decode.
+    // The URL IS the report, so it has to be self-describing — a shared link
+    // must carry which chart is the groom's rather than relying on the reader
+    // applying the same fallback we do.
+    const [a, setA] = useState<PersonInput>({ ...EMPTY_PERSON, role: 'groom' });
     const [b, setB] = useState<PersonInput>(EMPTY_PERSON);
     const [errA, setErrA] = useState<FieldErrors>({});
     const [errB, setErrB] = useState<FieldErrors>({});

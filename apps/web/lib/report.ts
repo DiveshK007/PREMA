@@ -50,17 +50,52 @@ export function otherRole(r: Role): Role {
 // URL encoding
 // ---------------------------------------------------------------------------
 
-/** name|YYYY-MM-DD|HH:mm|City  — pipe-delimited, then base64url. ~40 bytes each. */
+// base64url, without Buffer.
+//
+// This module is imported by BOTH the server component that renders the report
+// and the client component that builds the link, so it has to run in a browser.
+// `Buffer.from(x).toString('base64url')` is Node-only — the browser's Buffer
+// polyfill throws `Unknown encoding: base64url` — and it threw on the very
+// first real form submission despite every test passing, because the tests run
+// in Node.
+//
+// btoa/atob are byte-oriented, so UTF-8 is encoded explicitly. That matters
+// here: a name in Devanagari would corrupt under a naive btoa(str).
+
+function bytesToBase64Url(bytes: Uint8Array): string {
+    let binary = '';
+    for (const b of bytes) binary += String.fromCharCode(b);
+    const b64 =
+        typeof btoa === 'function'
+            ? btoa(binary)
+            : // Node before btoa was global, and any non-DOM runtime.
+              Buffer.from(binary, 'binary').toString('base64');
+    return b64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}
+
+function base64UrlToBytes(token: string): Uint8Array {
+    const b64 = token.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = b64 + '='.repeat((4 - (b64.length % 4)) % 4);
+    const binary =
+        typeof atob === 'function'
+            ? atob(padded)
+            : Buffer.from(padded, 'base64').toString('binary');
+    const out = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) out[i] = binary.charCodeAt(i);
+    return out;
+}
+
+/** name|YYYY-MM-DD|HH:mm|City|role — pipe-delimited, then base64url. ~40 bytes each. */
 function encodePerson(p: PersonInput): string {
     const raw = [p.name, p.date, p.time, p.city, p.role ?? '']
         .map((f) => f.replace(/\|/g, ' '))
         .join('|');
-    return Buffer.from(raw, 'utf8').toString('base64url');
+    return bytesToBase64Url(new TextEncoder().encode(raw));
 }
 
 function decodePerson(token: string): PersonInput | null {
     try {
-        const raw = Buffer.from(token, 'base64url').toString('utf8');
+        const raw = new TextDecoder().decode(base64UrlToBytes(token));
         const [name, date, time, city, role] = raw.split('|');
         if (name === undefined || date === undefined) return null;
         return {

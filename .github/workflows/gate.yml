@@ -1,0 +1,54 @@
+name: gate
+
+# "Nothing ships unless the gate passes" had no enforcement before this file
+# existed: no CI, no required check, and a vitest config pointing at a directory
+# that did not exist. A gate you cannot fail is not a gate.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: gate-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          # package.json declares engines >=24. Pin it here so CI cannot pass on
+          # a version production will not run.
+          node-version: 24
+          cache: npm
+
+      - name: Install
+        run: npm ci
+
+      - name: Types
+        run: npm run check-types
+
+      - name: Tests
+        run: npm test
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+
+      # The engine is the product. If it cannot be executed from a clean
+      # checkout, the golden fixture and The Assignment are both blocked, and
+      # that was the state of this repo for its entire history.
+      - name: Engine is runnable
+        run: npx tsx scripts/chart.ts "14/03/1998 04:20 Pune" "02/09/1999 21:05 Hyderabad"
+
+      - name: Fixture harness is runnable
+        run: npx tsx scripts/fixture.ts | tail -5

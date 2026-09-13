@@ -36,3 +36,8 @@ yarn-error.log*
 # Misc
 .DS_Store
 *.pem
+
+# Hand-test output. Contains real people's birth details by design — it is
+# generated locally, sent by hand, and never committed.
+handtest-out/
+couples.csv

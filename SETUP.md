@@ -1,8 +1,11 @@
 # What only you can do
 
-Everything in this repo is built and tested. What remains needs a human with a
-bank account, a phone, and access to people. This is that list, in the order
-that unblocks the most.
+Everything in this repo is built, tested and automated as far as a machine can
+take it. What remains needs a human with a bank account, a phone, and access to
+people.
+
+Each step below names the command that does the machine half, so the part left
+to you is only the part a machine genuinely cannot do.
 
 Nothing here is engineering. If you do steps 1 and 2 and nothing else, you will
 have learned more than the last three weeks of planning did.
@@ -16,18 +19,30 @@ have learned more than the last three weeks of planning did.
 You need roughly 20 real births for the golden fixture (step 3) regardless. Use
 ten of them twice.
 
-1. Run the app locally:
-   ```bash
-   npm install
-   npm run dev --workspace=web        # http://localhost:3000
-   ```
-2. Make ten reports for real couples you know of — friends, cousins, anyone
-   whose birth details you can get honestly.
-3. Screenshot each one, or grab the image straight from
-   `/api/og?a=...&b=...` (the URL is in the page's share button).
-4. Send them to ten people in the target demographic. Say nothing clever. Just
-   send it.
-5. **Count how many forward it to a parent without being asked.**
+**Automated for you:** image generation, links, and a tracking sheet.
+
+```bash
+npm install
+npm run dev --workspace=web     # leave running, http://localhost:3000
+
+npm run handtest -- --init      # writes couples.csv
+#   ...replace the rows with real couples...
+npm run handtest -- couples.csv # writes handtest-out/ with images + HANDTEST.md
+```
+
+A blank birth-time column is fine and worth including — it produces the caveat
+band, which is itself worth putting in front of someone.
+
+**Left to you:**
+
+1. Get birth details for ten real couples, honestly.
+2. Send each image to one person in the target demographic. Say nothing clever.
+3. Wait a day.
+4. **Count how many forward it to a parent without being asked.** Fill in
+   `handtest-out/HANDTEST.md`.
+
+`handtest-out/` and `couples.csv` are gitignored — they contain real people's
+birth details and are never committed.
 
 That number is the entire thesis. Below roughly two in ten and the forwarding
 bet is wrong, and no amount of Next.js changes it. Above that and you know
@@ -50,36 +65,53 @@ serve both.
 **As a supplier** for the paid review tier. Manual fulfilment means you pay them
 per report and email the signed result yourself. There is no integration.
 
-**As the authority on four questions the code cannot settle.** Send these
-together, not one at a time:
+**As the authority on four questions the code cannot settle.**
 
-1. **Varna convention.** We score 1 point if the groom's varna rank is at least
-   the bride's, else 0. Correct?
-2. **Bhakoot 5/9.** We award 7 for 1/1, 1/7, 3/11 and 4/10, and 0 otherwise.
-   Should 5/9 score?
-3. **Bhakoot cancellations.** We cancel when both signs share a ruling planet.
-   Which other cancellations do you apply?
-4. **Nadi cancellations.** Ours are hand-rolled and unverified. Nadi is 8 of 36
-   points and the one families ask about most. Which cancellations count?
+**Automated for you:** the message is written, with live worked examples pulled
+from the engine so every question has a concrete case attached.
 
-Their answers land in `packages/compatibility/src/astrology/ashtakoota.ts`.
+```bash
+npm run astrologer              # prints it
+npm run astrologer > brief.txt  # or save it
+```
+
+Send it as ONE message. Four batched questions get answered; four separate
+conversations do not.
+
+**Left to you:** finding the person, and paying them. Their answers land in
+`packages/compatibility/src/astrology/ashtakoota.ts`.
 
 ---
 
-## 3. Verify the numbers against AstroSage
+## 3. Spot-check the conventions against AstroSage
 
-**Time: about an hour of copying. Unblocks: shipping to strangers.**
+**Time: fifteen minutes, not an hour. Unblocks: shipping to strangers.**
 
-Right now 40 tests prove the engine is internally consistent. None prove it is
-externally right — which is exactly what it was not before the heliocentric bug
-was found.
+**Already automated, and this changed what is left for you.** The *astronomy* is
+now verified by machine:
+
+```bash
+npm run verify:ephemeris
+```
+
+That implements lunar longitude from scratch (Meeus ch.47) and compares it
+against astronomy-engine. Two implementations sharing no code agree to **0.64
+arcminutes mean, 1.8 worst, across 1900-2100** — and the check proves it has
+teeth by confirming the old heliocentric call still fails it by 8.22 degrees. It
+runs in the normal test gate and weekly in CI.
+
+So you are no longer verifying whether the Moon is in the right place. You are
+only verifying **convention**: ayanamsa choice, nakshatra boundaries, koota
+rules. That is a handful of spot-checks, not twenty lookups.
 
 ```bash
 npx tsx scripts/fixture.ts          # prints 20 births to check
 ```
 
-For each one, run it through [AstroSage](https://www.astrosage.com) and record
-the nakshatra, pada and rashi into:
+Do **three or four**, not all twenty — pick from the boundary cases, since those
+are where a convention difference actually shows. Run each through
+[AstroSage](https://www.astrosage.com) and record the nakshatra, pada and rashi
+into:
 
 ```
 packages/compatibility/__tests__/fixtures/golden.json
@@ -140,6 +172,10 @@ Hobby is fine for building, testing and even a live free experiment.
 
 It becomes mandatory the moment the pay button goes live.
 
+A `vercel.json` is committed with the monorepo build commands and `bom1`
+(Mumbai) as the region — your audience is in India, and serving the report from
+Washington adds a round trip to the one artifact that has to feel instant.
+
 ```
 Vercel project settings
   Root directory     apps/web
@@ -197,6 +233,23 @@ Once approved:
    constraint should absorb it and the endpoint should still return 2xx
 5. Only then set `PAYMENTS_LIVE=true`
 6. Upgrade to Vercel Pro
+
+---
+
+## What the machine now does on its own
+
+| | Command | Runs |
+|---|---|---|
+| Full gate: types, tests, lint, build | `npm test` / CI | every push and PR |
+| Independent ephemeris cross-check | `npm run verify:ephemeris` | test gate + weekly |
+| Run any chart from the CLI | `npm run chart -- "14/03/1998 04:20 Pune" "..."` | on demand |
+| Golden fixture candidates | `npm run fixture` | on demand |
+| Hand-test images and tracking sheet | `npm run handtest -- couples.csv` | on demand |
+| Astrologer brief with worked examples | `npm run astrologer` | on demand |
+
+CI lives in `.github/workflows/`. The gate pins Node 24 so it cannot pass on a
+version production will not run, and it asserts the engine is executable from a
+clean checkout — which it was not, for this repo's entire history.
 
 ---
 

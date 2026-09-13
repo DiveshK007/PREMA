@@ -7,7 +7,12 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
-    "test": "turbo run test"
+    "test": "turbo run test",
+    "chart": "tsx scripts/chart.ts",
+    "fixture": "tsx scripts/fixture.ts",
+    "handtest": "tsx scripts/handtest.ts",
+    "astrologer": "tsx scripts/astrologer-brief.ts",
+    "verify:ephemeris": "tsx scripts/verify-ephemeris.ts"
   },
   "devDependencies": {
     "prettier": "3.9.6",

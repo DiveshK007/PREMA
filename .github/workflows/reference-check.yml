@@ -1,0 +1,25 @@
+name: reference-check
+
+# Runs the independent ephemeris cross-check on a schedule as well as on
+# demand. Astronomy code fails silently: it keeps returning plausible numbers
+# that are simply wrong, which is exactly how this engine shipped a heliocentric
+# Moon. A scheduled second opinion catches drift that unit tests cannot.
+
+on:
+  schedule:
+    - cron: '17 4 * * 1' # Mondays, off-peak
+  workflow_dispatch:
+
+jobs:
+  reference:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - name: Cross-check against an independent implementation
+        run: npx tsx scripts/verify-ephemeris.ts

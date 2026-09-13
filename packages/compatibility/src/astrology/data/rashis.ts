@@ -29,7 +29,14 @@ export function getRashiFromDegree(siderealMoonLongitude: number): RashiData {
     if (normalized < 0) normalized += 360;
 
     const index = Math.floor(normalized / 30);
-    return RASHIS[Math.min(index, 11)];
+    const rashi = RASHIS[Math.min(index, 11)];
+    if (!rashi) {
+        // Unreachable: RASHIS has 12 entries and the index is clamped to 11.
+        throw new Error(
+            `No rashi at index ${Math.min(index, 11)} for longitude ${siderealMoonLongitude}`
+        );
+    }
+    return rashi;
 }
 
 /**

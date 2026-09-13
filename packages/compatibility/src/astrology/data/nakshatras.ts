@@ -50,6 +50,13 @@ export function getNakshatraFromDegree(siderealMoonLongitude: number): { nakshat
     const span = 360 / 27; // 13.333333...
     const index = Math.floor(normalized / span);
     const nakshatra = NAKSHATRAS[Math.min(index, 26)];
+    if (!nakshatra) {
+        // Unreachable: NAKSHATRAS has 27 entries and the index is clamped to 26.
+        // Throwing beats a silent undefined reaching the koota calculations.
+        throw new Error(
+            `No nakshatra at index ${Math.min(index, 26)} for longitude ${siderealMoonLongitude}`
+        );
+    }
     
     // Each pada is 3.333... degrees
     const relativeDegree = normalized - (index * span);

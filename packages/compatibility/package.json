@@ -2,21 +2,23 @@
   "name": "@prema/compatibility",
   "version": "1.0.0",
   "private": true,
-  "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "build": "tsc",
     "dev": "tsc -w",
-    "clean": "rm -rf dist",
     "test": "vitest run",
     "test:watch": "vitest",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "astronomy-engine": "^2.1.19"
+    "astronomy-engine": "^2.1.19",
+    "luxon": "^3.7.2"
   },
   "devDependencies": {
-    "typescript": "^5.0.0",
+    "@types/luxon": "^3.7.5",
+    "typescript": "7.0.2",
     "vitest": "^3.2.1"
+  },
+  "exports": {
+    ".": "./src/index.ts"
   }
 }

@@ -69,6 +69,15 @@ export interface UserBirthData {
   birthPlaceCity?: string;
   birthPlaceLat?: number;
   birthPlaceLon?: number;
+  /**
+   * IANA time zone of the birth place, e.g. 'Asia/Kolkata'.
+   *
+   * Required to place `exactBirthTime` on the sky correctly. Carried in the
+   * city dataset alongside lat/lon rather than resolved from coordinates at
+   * runtime. Defaults to Asia/Kolkata when absent; the zone actually applied
+   * is reported back on MoonPosition.timeZoneUsed.
+   */
+  birthTimeZone?: string;
 }
 
 export interface UserPreferences {

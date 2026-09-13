@@ -1,0 +1,14 @@
+Fonts vendored for server-side image rendering.
+
+  Gentium Book Plus            (c) SIL International
+  Noto Serif Devanagari        (c) The Noto Project Authors
+
+Both are licensed under the SIL Open Font License, Version 1.1.
+https://openfontlicense.org
+
+They are committed rather than fetched at runtime because Satori falls back
+over the network for unknown glyphs, and that fallback fails silently in
+sandboxed builds — producing tofu in the one artifact this product depends on
+reaching a family intact.
+
+TTF rather than WOFF2: Satori cannot decompress brotli.

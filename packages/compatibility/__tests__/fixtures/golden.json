@@ -1,0 +1,302 @@
+[
+  {
+    "date": "1994-06-01",
+    "time": "16:00",
+    "city": "Pune",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Shatabhisha",
+      "pada": 4,
+      "rashi": "Kumbha"
+    }
+  },
+  {
+    "date": "1994-06-06",
+    "time": "10:00",
+    "city": "Pune",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Bharani",
+      "pada": 2,
+      "rashi": "Mesha"
+    }
+  },
+  {
+    "date": "1994-06-03",
+    "time": "14:20",
+    "city": "Pune",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Uttara Bhadrapada",
+      "pada": 4,
+      "rashi": "Meena"
+    }
+  },
+  {
+    "date": "1994-06-05",
+    "time": "00:00",
+    "city": "Pune",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Revati",
+      "pada": 4,
+      "rashi": "Meena"
+    }
+  },
+  {
+    "date": "1994-06-02",
+    "time": "18:20",
+    "city": "Pune",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Uttara Bhadrapada",
+      "pada": 1,
+      "rashi": "Meena"
+    }
+  },
+  {
+    "date": "1994-06-05",
+    "time": "20:20",
+    "city": "Pune",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Ashwini",
+      "pada": 3,
+      "rashi": "Mesha"
+    }
+  },
+  {
+    "date": "1989-11-03",
+    "time": "22:00",
+    "city": "Mumbai",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Purva Ashadha",
+      "pada": 1,
+      "rashi": "Dhanu"
+    }
+  },
+  {
+    "date": "1989-11-02",
+    "time": "20:00",
+    "city": "Mumbai",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Mula",
+      "pada": 1,
+      "rashi": "Dhanu"
+    }
+  },
+  {
+    "date": "1989-11-06",
+    "time": "00:40",
+    "city": "Mumbai",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Shravana",
+      "pada": 1,
+      "rashi": "Makara"
+    }
+  },
+  {
+    "date": "1931-04-18",
+    "time": "05:45",
+    "city": "Kolkata",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Ashwini",
+      "pada": 2,
+      "rashi": "Mesha"
+    }
+  },
+  {
+    "date": "1938-12-03",
+    "time": "19:10",
+    "city": "Delhi",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Revati",
+      "pada": 4,
+      "rashi": "Meena"
+    }
+  },
+  {
+    "date": "1943-06-15",
+    "time": "08:00",
+    "city": "Chennai",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Swati",
+      "pada": 4,
+      "rashi": "Tula"
+    }
+  },
+  {
+    "date": "1944-02-09",
+    "time": "23:30",
+    "city": "Jaipur",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Magha",
+      "pada": 1,
+      "rashi": "Simha"
+    }
+  },
+  {
+    "date": "1998-03-14",
+    "time": "04:20",
+    "city": "Pune",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Uttara Phalguni",
+      "pada": 4,
+      "rashi": "Kanya"
+    }
+  },
+  {
+    "date": "1999-09-02",
+    "time": "21:05",
+    "city": "Mumbai",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Rohini",
+      "pada": 1,
+      "rashi": "Vrishabha"
+    }
+  },
+  {
+    "date": "1985-07-21",
+    "time": "11:45",
+    "city": "Delhi",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Purva Phalguni",
+      "pada": 1,
+      "rashi": "Simha"
+    }
+  },
+  {
+    "date": "2001-01-09",
+    "time": "17:30",
+    "city": "Chennai",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Punarvasu",
+      "pada": 1,
+      "rashi": "Mithuna"
+    }
+  },
+  {
+    "date": "1976-11-28",
+    "time": "02:15",
+    "city": "Kolkata",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Dhanishta",
+      "pada": 4,
+      "rashi": "Kumbha"
+    }
+  },
+  {
+    "date": "1992-05-05",
+    "time": "14:00",
+    "city": "Jaipur",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Mrigashira",
+      "pada": 1,
+      "rashi": "Vrishabha"
+    }
+  },
+  {
+    "date": "2004-08-19",
+    "time": "09:35",
+    "city": "Pune",
+    "expected": {
+      "nakshatra": null,
+      "pada": null,
+      "rashi": null
+    },
+    "ours": {
+      "nakshatra": "Uttara Phalguni",
+      "pada": 4,
+      "rashi": "Kanya"
+    }
+  }
+]

@@ -311,7 +311,9 @@ export default function FormPage() {
                         <button
                             type="button"
                             className="textlink"
-                            style={{ minHeight: 0, color: 'inherit' }}
+                            // 44px target preserved; negative margin keeps it
+                            // sitting inline within the band. See DESIGN.md.
+                            style={{ minHeight: 44, marginTop: -12, marginBottom: -12, color: 'inherit' }}
                             onClick={() => setStep(1)}
                         >
                             Change

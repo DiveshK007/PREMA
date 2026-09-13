@@ -154,13 +154,12 @@ prints.
 
 ## Housekeeping
 
-- **Delete `fix-second-spin.js` and `apps/mobile/fix-figure.js`.** One-off regex codemods
-  that patch source files, committed to the repo. `fix-second-spin.js` landed in
-  `06e67a0`. Their edits are already in the source; re-running them is a no-op at best.
+- ~~Delete `fix-second-spin.js` and `apps/mobile/fix-figure.js`~~ **DONE 2026-09-13.**
 - **`README.md` is unmodified Turborepo boilerplate.** It documents a `docs` app that
   does not exist and never mentions mobile, admin, supabase, or PREMA.
-- **`discoveryThreshold: 70`** is declared in `matching-config.ts:42` and `types.ts:240`
-  and referenced nowhere in the engine. Either wire it or delete it.
+- ~~`discoveryThreshold: 70` is dead config~~ **WIRED 2026-09-13** into
+  `generateDailyRecommendations`. Candidates below the threshold are no longer shown,
+  which is what "curated discovery" was claiming all along.
 
 ---
 
@@ -204,14 +203,19 @@ second embedded font and is deferred with the print view.
   NOT machine-generated — religious terminology that is subtly wrong reads as careless
   in exactly the register where carelessness is most expensive. Needs a human
   translator. Tamil is deferred separately; it needs a second embedded font.
-- **OG image font.** Renders in Satori's default sans, not the document serif, and
-  carries no Devanagari. Satori does not ship a Devanagari face and falls back over the
-  network for unknown glyphs — a fallback that fails silently in sandboxed builds.
-  Needs Noto Sans Devanagari vendored as TTF/OTF (not WOFF2, which Satori cannot read)
-  and embedded via the `fonts` option, with OFL attribution.
-- **Golden fixture.** The 22 tests assert behaviour. Nothing yet checks against
-  AstroSage. Now much more likely to agree: the heliocentric bug is fixed and the
-  gendered convention matches the reference.
+- ~~OG image font~~ **DONE 2026-09-13.** Gentium Book Plus and Noto Serif Devanagari
+  vendored as TTF and embedded via the `fonts` option; OFL notice in
+  `apps/web/app/api/og/fonts/OFL.txt`. Devanagari now renders in the forwarded image.
+  Note: `fetch(new URL(..., import.meta.url))` does NOT work under Turbopack's
+  production build ("not implemented... yet"), so the fonts are read with `fs` and kept
+  in the deployment by `outputFileTracingIncludes`.
+- ~~Golden fixture~~ **HARNESS DONE 2026-09-13, values outstanding.**
+  `scripts/fixture.ts` generates 20 births meeting the boundary criteria;
+  `__tests__/golden.test.ts` consumes them and reports its own coverage
+  (`0/20 verified`) so a green gate is never mistaken for verified numbers. The
+  reference values are deliberately NOT fabricated — see SETUP.md step 3.
+- ~~Touch target padding~~ **DONE 2026-09-13.** The two inline links keep a 44px hit
+  area, pulled back visually with negative margin rather than shrunk to fit.
 
 ## Increment 3 — shipped 2026-09-13 (code complete, blocked on real-world steps)
 

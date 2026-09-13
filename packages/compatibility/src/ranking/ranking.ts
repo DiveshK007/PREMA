@@ -112,8 +112,18 @@ export function generateDailyRecommendations(
   config: MatchingConfig
 ): DailyRecommendation {
   const ranked = rankCandidates(candidates, config);
+
+  // discoveryThreshold was declared in matching-config.ts and types.ts and read
+  // nowhere, so "curated discovery" was a claim rather than a behaviour. Wire
+  // it here: a candidate below the threshold is not shown at all, which is what
+  // curation means.
+  const threshold = config.discoveryThreshold ?? 0;
+  const aboveThreshold = ranked.filter(
+    (c) => c.compatibilityResult.score >= threshold
+  );
+
   const maxRecommendations = config.maxRecommendations || 5;
-  const diverse = applyDiversityRules(ranked, maxRecommendations);
+  const diverse = applyDiversityRules(aboveThreshold, maxRecommendations);
 
   return {
     userId,

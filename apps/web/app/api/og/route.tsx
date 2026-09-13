@@ -1,4 +1,6 @@
 import { ImageResponse } from 'next/og';
+import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 import { computeReport, decodePair, longDate } from '../../../lib/report';
 
 /**
@@ -11,12 +13,50 @@ import { computeReport, decodePair, longDate } from '../../../lib/report';
  * Computed from the SAME search params as the page, through the SAME pure
  * function. The two cannot disagree.
  *
- * Devanagari is deliberately absent here. Satori does not ship a Devanagari
- * face and falls back over the network for unknown glyphs — a fallback that
- * fails silently in sandboxed builds and renders tofu in the image that
- * actually reaches the family. English only until a Noto Sans Devanagari TTF
- * is vendored and embedded (TODOS.md). Better a plain image than a broken one.
+ * FONTS. Satori ships no font of its own beyond a Latin default and falls back
+ * over the NETWORK for unknown glyphs — a fallback that fails silently in
+ * sandboxed builds and renders tofu in the image that actually reaches the
+ * family. So both faces are vendored as TTF and embedded explicitly.
+ *
+ * TTF, not WOFF2: Satori cannot decompress brotli. TTF and OTF are also parsed
+ * faster than WOFF.
+ *
+ * Both are SIL Open Font License 1.1. See fonts/OFL.txt.
  */
+
+/**
+ * Read a vendored font from disk.
+ *
+ * NOT `fetch(new URL(..., import.meta.url))` — Turbopack's production build
+ * rejects file: URLs with "not implemented... yet". Plain fs works, and
+ * `outputFileTracingIncludes` in next.config.js keeps the .ttf files in the
+ * deployment output where this path can find them.
+ */
+async function loadFont(file: string): Promise<Buffer> {
+    return readFile(path.join(process.cwd(), 'app/api/og/fonts', file));
+}
+
+/**
+ * Cached across warm invocations. Four faces at roughly 1.6 MB total, which is
+ * comfortable on the Node runtime — the ~1 MB ceiling people worry about is an
+ * EDGE constraint, and this route is not on edge.
+ */
+let fontCache: Awaited<ReturnType<typeof loadFonts>> | null = null;
+
+async function loadFonts() {
+    const [serif, serifBold, deva, devaBold] = await Promise.all([
+        loadFont('GentiumBookPlus-Regular.ttf'),
+        loadFont('GentiumBookPlus-Bold.ttf'),
+        loadFont('NotoSerifDevanagari-Regular.ttf'),
+        loadFont('NotoSerifDevanagari-SemiBold.ttf'),
+    ]);
+    return [
+        { name: 'Gentium', data: serif, weight: 400 as const, style: 'normal' as const },
+        { name: 'Gentium', data: serifBold, weight: 700 as const, style: 'normal' as const },
+        { name: 'NotoDeva', data: deva, weight: 400 as const, style: 'normal' as const },
+        { name: 'NotoDeva', data: devaBold, weight: 600 as const, style: 'normal' as const },
+    ];
+}
 
 export const runtime = 'nodejs';
 
@@ -45,6 +85,8 @@ export async function GET(request: Request) {
 
     const { a, b, total, kootas, nadiClear, bhakootClear, assumedNoonFor } = result;
 
+    fontCache ??= await loadFonts();
+
     const person = (p: typeof a) =>
         `${p.input.name} · ${longDate(p.input.date)}${p.input.time ? ` at ${p.input.time}` : ''} · ${p.city.name}`;
 
@@ -59,7 +101,7 @@ export async function GET(request: Request) {
                     display: 'flex',
                     flexDirection: 'column',
                     padding: '72px 76px',
-                    fontFamily: 'serif',
+                    fontFamily: 'Gentium, NotoDeva',
                 }}
             >
                 <div
@@ -107,7 +149,12 @@ export async function GET(request: Request) {
                                 fontSize: 30,
                             }}
                         >
-                            <span>{k.koota}</span>
+                            <span style={{ display: 'flex', gap: 12, alignItems: 'baseline' }}>
+                                <span>{k.koota}</span>
+                                <span style={{ fontFamily: 'NotoDeva', color: INK3, fontSize: 27 }}>
+                                    {k.devanagari}
+                                </span>
+                            </span>
                             <span>
                                 {k.score} / {k.maxPoints}
                             </span>
@@ -171,6 +218,6 @@ export async function GET(request: Request) {
                 </div>
             </div>
         ),
-        { width: W, height: H }
+        { width: W, height: H, fonts: fontCache }
     );
 }

@@ -33,7 +33,10 @@ export function KootaLedger({
                 <button
                     type="button"
                     className="textlink"
-                    style={{ minHeight: 0 }}
+                    // DESIGN.md mandates a 44px target. Keep the hit area and
+                    // pull the visual box back with negative margin, rather than
+                    // shrinking the target to fit the layout.
+                    style={{ minHeight: 44, marginTop: -12, marginBottom: -12 }}
                     aria-expanded={openAll}
                     onClick={() => setOpenAll((v) => !v)}
                 >

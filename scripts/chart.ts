@@ -124,7 +124,10 @@ function comparePair(a: Parsed, b: Parsed): void {
   let sum = 0;
   for (const k of guna.kootas) {
     sum += k.score;
-    const frac = k.score % 1 !== 0 ? '  ← fractional' : '';
+    // Half points are traditional: Tara awards 1.5 when one direction is
+    // auspicious, and the Graha Maitri table contains 0.5 and 3. Only a
+    // QUARTER point is a bug, and calculateGunaMilan throws on those.
+    const frac = k.score % 0.5 !== 0 ? '  ← NOT a multiple of 0.5, this is a bug' : '';
     console.log(
       `  ${k.koota.padEnd(14)} ${String(k.score).padStart(5)} / ${k.maxPoints}${frac}`
     );
@@ -135,7 +138,7 @@ function comparePair(a: Parsed, b: Parsed): void {
     console.log(`  !! koota sum (${sum}) disagrees with totalScore (${guna.totalScore})`);
   }
   if (guna.totalScore % 1 !== 0) {
-    console.log(`  !! total is fractional — no reference tool prints this (see E4/E13)`);
+    console.log(`  (half points are normal in Ashtakoota — reference tools print them too)`);
   }
   console.log('');
   if (!a.hasTime || !b.hasTime) {
